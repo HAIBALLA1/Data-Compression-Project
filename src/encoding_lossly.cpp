@@ -8,7 +8,7 @@
 int main() {
     using namespace encoding::lossly;
 
-    std::vector<int>source ={1,2,3,4,5,6,7,8,9,10,11,12,13,14,15};
+    std::vector<int>source ={1,2,3,4,5};
     std::size_t nb_coefs=4;
     std::vector<double> resu=DiscreteCosinus::encode<int, double>(source, nb_coefs);;
     std::cout << "Résultat de l'encodage :" << std::endl;
