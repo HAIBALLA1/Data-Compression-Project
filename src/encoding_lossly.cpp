@@ -15,5 +15,50 @@ int main() {
     for (std::size_t i = 0; i < resu.size(); ++i) {
         std::cout << "Coefficient " << i << " : " << resu[i] << std::endl;
     }
+
+    std::vector<double> data = {10.0, 20.5, 30.2, 40.8};
+    double quantum = 5.0;
+
+    // Appel de la méthode encode
+    std::vector<int> encoded_data = quantization::encode<double>(data, quantum);
+
+    // Affichage des résultats encodés
+    std::cout << "Données encodées : ";
+    for (int val : encoded_data) {
+        std::cout << val << " ";
+    }
+    std::cout << std::endl;
+
+    // Appel de la méthode decode
+    std::vector<double> decoded_data = quantization::decode<double>(encoded_data, quantum);
+
+    // Affichage des résultats décodés
+    std::cout << "Données décodées : ";
+    for (double val : decoded_data) {
+        std::cout << val << " ";
+    }
+    std::cout << std::endl;
+
+    // Définition de la fonction de quantum dynamique
+    quantization::get_quantum_t get_quantum = [](std::size_t i) {
+        return 2.0 + i * 0.5;  // Exemple de quantum qui augmente à chaque élément
+    };
+
+    // Test de l'encodage et du décodage avec quantum dynamique
+    std::vector<int> encoded_data_dynamic = quantization::encode(data, get_quantum);
+    std::vector<double> decoded_data_dynamic = quantization::decode<double>(encoded_data_dynamic, get_quantum);
+
+    // Affichage des résultats
+    std::cout << "Encodage avec quantum dynamique:" << std::endl;
+    for (auto val : encoded_data_dynamic) {
+        std::cout << val << " ";
+    }
+    std::cout << std::endl;
+
+    std::cout << "Décodage avec quantum dynamique:" << std::endl;
+    for (auto val : decoded_data_dynamic) {
+        std::cout << val << " ";
+    }
+    std::cout << std::endl;
     return 0;
 }

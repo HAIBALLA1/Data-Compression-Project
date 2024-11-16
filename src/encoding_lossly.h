@@ -1,12 +1,15 @@
     //
 // Created by Farouk on 08/11/24.
 //
+#ifndef ENCODING_LOSSLY_H
+#define ENCODING_LOSSLY_H
 
 #include <vector>
 #include <cmath>
+#include <functional> // Pour std::function
+#include <cstddef> //pour std::size_t
 
 namespace encoding::lossly {
-
     struct DiscreteCosinus {
         template<typename D, typename R>
         static std::vector<R> encode(std::vector<D> const & source, std::size_t const & nb_coefs) {
@@ -47,8 +50,56 @@ namespace encoding::lossly {
     };
 
 
-};
-#ifndef ENCODING_LOSSLY_H
-#define ENCODING_LOSSLY_H
+   struct quantization {
+        using  get_quantum_t = std::function<double(std::size_t k)>;
+        template<typename D>
+        static std::vector<int> encode(std::vector<D> const & source, double const quantum) {
+            std::vector<int> res;
+            res.reserve(source.size()); //pour reserver de la memoire pour res.
+            for (std::size_t i = 0; i < source.size(); ++i) {
+                res.push_back(std::round(source[i] / quantum));
+
+            }
+            return res;
+        }
+        template<typename D>
+        static std::vector<D> decode(std::vector<int> const & source, double const quantum) {
+            std::vector<D> res;
+            res.reserve(source.size());
+
+            // Boucle pour reconstruire les éléments du vecteur res depuis le vecteur encodé
+            for (const auto& value : source) {
+                res.push_back(value * quantum);
+            }
+
+            return res;
+
+        }
+
+        template<typename D>
+        static std::vector<int> encode(std::vector<D> const & source, get_quantum_t get_quantum) {
+            std::vector<int> res;
+            res.reserve(source.size());
+            for (std::size_t i = 0; i < source.size(); ++i) {
+                res.push_back(std::round(source[i] / get_quantum(i)));
+            }
+
+            return res;
+        }
+
+       template<typename D>
+       static std::vector<D> decode(std::vector<int> const & source, get_quantum_t get_quantum) {
+            std::vector<D> res;
+            res.reserve(source.size());
+            for (std::size_t i = 0; i < source.size(); ++i) {
+                res.push_back(std::round(source[i]*get_quantum(i)));
+            }
+            return res;
+        }
+
+
+
+    };
+}
 
 #endif //ENCODING_LOSSLY_H
