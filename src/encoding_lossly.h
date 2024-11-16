@@ -19,7 +19,7 @@ namespace encoding::lossly {
             for(std::size_t i = 0; i < nb_coefs; ++i) {
                 res.push_back(source[0]);
                 for (std::size_t j = 1; j < source.size(); ++j) {
-                    res[i] +=res[i] + source[j] * std::cos((2 * M_PI * i * j) / nb_coefs);
+                    res[i] =res[i] + source[j] * std::cos((2 * M_PI * i * j) / nb_coefs);
                 }
             }
             return res;
