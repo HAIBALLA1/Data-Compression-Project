@@ -7,48 +7,6 @@
 #include <cassert>
 
 namespace encoding::lossly {
-
-        // cosinus
-        struct DiscreteCosinus {
-            // encodage
-            template<typename D, typename R>
-            static std::vector<R> encode(const std::vector<D>& source, const std::size_t& nb_coefs) {
-                std::vector<R> res;
-
-                if (source.empty()) {
-                    return res;
-                }
-                for (std::size_t i = 0; i < nb_coefs; ++i) {
-                    R sum = static_cast<R>(source[0]);
-                    for (std::size_t j = 1; j < source.size(); ++j) {
-                        sum += static_cast<R>(source[j]) * std::cos((2 * M_PI * i * j) / nb_coefs);
-                    }
-                    res.push_back(sum);
-                }
-                return res;
-            }
-
-            // decodage
-            template<typename D, typename R>
-            static std::vector<D> decode(const std::vector<R>& encoded, const std::size_t& size) {
-                std::vector<D> res;
-                if (encoded.empty()) {
-                    return res;
-                }
-                std::size_t nb_coefs = encoded.size();
-                for (std::size_t i = 0; i < size; ++i) {
-                    R sum = encoded[0];
-                    for (std::size_t j = 1; j < nb_coefs; ++j) {
-                        double theta = (2 * M_PI * j * i) / nb_coefs;
-                        sum += encoded[j] * std::cos(theta);
-                    }
-                    sum /= nb_coefs;
-                    res.push_back(static_cast<D>(sum));
-                }
-                return res;
-            }
-        };
-
         // fourier
         struct DiscreteFourier {
             // encodage
