@@ -1,9 +1,11 @@
 //
 // Created by ing on 08/11/24.
 //
-
-#include <iostream>
 #include "encoding_lossly.h"
+#include <iostream>
+
+
+#include <iomanip>// pour  setprecision
 
 int main() {
     using namespace encoding::lossly;
@@ -60,5 +62,44 @@ int main() {
         std::cout << val << " ";
     }
     std::cout << std::endl;
+
+
+    //teste de la partie DiscreteFourier
+
+    std::vector<double> sources = {1.0, 2.0, 3.0, 4.0};
+
+
+    std::cout << "Signal source : ";
+    for (const auto& val : sources) {
+        std::cout << val << " ";
+    }
+    std::cout << "\n\n";
+
+    auto encoded = encoding::lossly::DiscreteFourier::encode<double, double>(sources, nb_coefs);
+
+    std::cout << "Coefficients encodés (Partie réelle et imaginaire) :\n";
+    std::cout << std::fixed << std::setprecision(6);
+    for (std::size_t i = 0; i < nb_coefs; ++i) {
+        std::cout << "Coefficient " << i << " : Réel = " << encoded.first[i]
+                  << ", Imaginaire = " << encoded.second[i] << "\n";
+    }
+    std::cout << "\n";
+
+    std::vector<double> decoded =DiscreteFourier::decode<double, double>(encoded, sources.size());
+
+    std::cout << "Signal décodé : ";
+    for (const auto& val : decoded) {
+        std::cout << val << " ";
+    }
+    std::cout << "\n\n";
+
+    std::cout << "Différences entre le signal source et le signal décodé :\n";
+    for (std::size_t i = 0; i < sources.size(); ++i) {
+        double difference = std::abs(sources[i] - decoded[i]);
+        std::cout << "Indice " << i << " : Source = " << sources[i]
+                  << ", Décodé = " << decoded[i]
+                  << ", Différence = " << difference << "\n";
+    }
+
     return 0;
 }
