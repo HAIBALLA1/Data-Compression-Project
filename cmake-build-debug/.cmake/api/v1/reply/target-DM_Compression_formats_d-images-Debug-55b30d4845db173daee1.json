@@ -113,8 +113,7 @@
 			"name" : "Header Files",
 			"sourceIndexes" : 
 			[
-				1,
-				2
+				1
 			]
 		}
 	],
@@ -129,11 +128,6 @@
 		{
 			"backtrace" : 1,
 			"path" : "src/encoding_lossly.h",
-			"sourceGroupIndex" : 1
-		},
-		{
-			"backtrace" : 1,
-			"path" : "src/encoding_lossless.h",
 			"sourceGroupIndex" : 1
 		}
 	],
