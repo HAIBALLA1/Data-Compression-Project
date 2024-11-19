@@ -55,11 +55,11 @@
 			[
 				{
 					"backtrace" : 2,
-					"path" : "/home/naben/Desktop/DMC/DM_Compression_formats_d-images/."
+					"path" : "/home/ing/Bureau/DM_Compression_formats_d-images/."
 				},
 				{
 					"backtrace" : 3,
-					"path" : "/home/naben/Desktop/DMC/DM_Compression_formats_d-images/src"
+					"path" : "/home/ing/Bureau/DM_Compression_formats_d-images/src"
 				}
 			],
 			"language" : "CXX",
@@ -113,7 +113,9 @@
 			"name" : "Header Files",
 			"sourceIndexes" : 
 			[
-				1
+				1,
+				2,
+				3
 			]
 		}
 	],
@@ -128,6 +130,16 @@
 		{
 			"backtrace" : 1,
 			"path" : "src/encoding_lossly.h",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"path" : "src/encoding_lossless.h",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"path" : "src/.idea/utils.h",
 			"sourceGroupIndex" : 1
 		}
 	],

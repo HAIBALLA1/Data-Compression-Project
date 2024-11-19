@@ -1,4 +1,4 @@
-# Install script for directory: /home/naben/Desktop/DMC/DM_Compression_formats_d-images
+# Install script for directory: /home/ing/Bureau/DM_Compression_formats_d-images
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
@@ -50,5 +50,5 @@ endif()
 
 string(REPLACE ";" "\n" CMAKE_INSTALL_MANIFEST_CONTENT
        "${CMAKE_INSTALL_MANIFEST_FILES}")
-file(WRITE "/home/naben/Desktop/DMC/DM_Compression_formats_d-images/cmake-build-debug/${CMAKE_INSTALL_MANIFEST}"
+file(WRITE "/home/ing/Bureau/DM_Compression_formats_d-images/cmake-build-debug/${CMAKE_INSTALL_MANIFEST}"
      "${CMAKE_INSTALL_MANIFEST_CONTENT}")
