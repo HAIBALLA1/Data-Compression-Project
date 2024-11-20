@@ -8,107 +8,141 @@
 #include <variant>
 #include <utility>
 #include <vector>
+#include <algorithm>
 #include <functional>
+#include <memory>
 #include <optional>
 
-template<typename W ,typename D >
+namespace utils {
+
+template<typename W, typename D>
 class WeightedBinaryTree {
-  public:
+public:
 
-    //methode qui cree un nouds d'arbre.
-    static WeightedBinaryTree<W, D> leaf(W weight, D data) {
-        return WeightedBinaryTree<W, D>(weight, data);
+    // 3o) Constructeur
+    // Constructeur pour une feuille
+    WeightedBinaryTree(W weight, D data)
+        : m_weight(weight), m_content(data) {}
+
+    // Constructeur pour un nœud complexe
+    WeightedBinaryTree(W weight, std::pair<std::shared_ptr<WeightedBinaryTree<W, D>>, std::shared_ptr<WeightedBinaryTree<W, D>>> children)
+        : m_weight(weight), m_content(children) {}
+
+    // Constructeur générique
+    WeightedBinaryTree(W weight, std::variant<D, std::pair<std::shared_ptr<WeightedBinaryTree<W, D>>, std::shared_ptr<WeightedBinaryTree<W, D>>>> content)
+        : m_weight(weight), m_content(content) {}
+    // Constructeur par copie
+    WeightedBinaryTree(const WeightedBinaryTree& other)
+        : m_weight(other.m_weight), m_content(other.m_content) {}
+
+    // Constructeur par déplacement
+    WeightedBinaryTree(WeightedBinaryTree&& other)
+        : m_weight(other.m_weight), m_content(std::move(other.m_content)) {}
+
+    // Opérateur d'affectation par copie supprimé
+    WeightedBinaryTree& operator=(const WeightedBinaryTree& other) = delete;
+
+    // Opérateur d'affectation par déplacement supprimé
+    WeightedBinaryTree& operator=(WeightedBinaryTree&& other) = delete;
+
+
+    // 4o) Méthode statique publique leaf
+    static std::shared_ptr<WeightedBinaryTree<W, D>> leaf(W weight, D data) {
+        return std::make_shared<WeightedBinaryTree>(weight, data);
     }
 
-    // make_pair cree un objet  std::pair sans specifier les types des parametres std::make_pair(left->m_weight, right->m_weight) <==> std::pair<left,right> pr)
-    static WeightedBinaryTree<W, D> complex(WeightedBinaryTree<W, D> const * left, WeightedBinaryTree<W, D> const * right) {
-        return WeightedBinaryTree<W, D>(left->m_weight + right->m_weight,
-                                        std::make_pair(left->m_weight, right->m_weight));
+
+    // 5o) Méthode statique publique complex
+    static std::shared_ptr<WeightedBinaryTree<W, D>> complex(std::shared_ptr<WeightedBinaryTree<W, D>> left, std::shared_ptr<WeightedBinaryTree<W, D>> right) {
+        W combined_weight = left->get_weight() + right->get_weight();
+        return std::make_shared<WeightedBinaryTree>(combined_weight, std::make_pair(left, right));
     }
 
-    //verifier si c est un feuille ou pas .
-    bool isLeaf() const {
+
+    // 6o) Méthodes publiques constantes
+    bool is_leaf() const {
         return std::holds_alternative<D>(m_content);
     }
 
-
-    //verifier si le neoud est cree par deux subtrees
-    bool isComplex() const {
-        return std::holds_alternative<std::pair<WeightedBinaryTree<W, D>*, WeightedBinaryTree<W, D>*>>(m_content);
+    bool is_complex() const {
+        return std::holds_alternative<std::pair<std::shared_ptr<WeightedBinaryTree<W, D>>, std::shared_ptr<WeightedBinaryTree<W, D>>>>(m_content);
     }
 
 
-    W const get_weight() {
-        return m_weight ;
+    W const get_weight() const {
+        return m_weight;
     }
 
-    D const & get_data() {
-        return m_content;
+    D const& get_data() const {
+        return std::get<D>(m_content);
     }
 
-    WeightedBinaryTree<W, D> const & get_left() {
-        return *std::get<std::pair<WeightedBinaryTree<W, D>*, WeightedBinaryTree<W, D>*>>(m_content).first;
+    // 7o) Méthodes publiques
+    std::shared_ptr<WeightedBinaryTree<W, D>> get_left() const {
+        return std::get<std::pair<std::shared_ptr<WeightedBinaryTree<W, D>>, std::shared_ptr<WeightedBinaryTree<W, D>>>>(m_content).first;
     }
 
-    WeightedBinaryTree<W, D> const & get_right() {
-        return *std::get<std::pair<WeightedBinaryTree<W, D>*, WeightedBinaryTree<W, D>*>>(m_content).second;
+
+    std::shared_ptr<WeightedBinaryTree<W, D>> get_right() const {
+        return std::get<std::pair<std::shared_ptr<WeightedBinaryTree<W, D>>, std::shared_ptr<WeightedBinaryTree<W, D>>>>(m_content).second;
     }
 
-    //je souleve une exception dans le ou ona jute une feuille
+
+    // 8o) Méthode publique add_dummy
     void add_dummy() {
-        if (!isComplex()) {
-            throw std::runtime_error("Cannot add a dummy to a leaf node.");
-        }
+        if (is_complex()) {
+            auto& subtrees = std::get<std::pair<std::shared_ptr<WeightedBinaryTree<W, D>>, std::shared_ptr<WeightedBinaryTree<W, D>>>>(m_content);
+            auto A = subtrees.second;
 
-        //ici j'ai utilise const_cast , car d'apres l'enonce get_right() est const donc je suis oblige de caster pour enlever le const a cette fonct
-        auto* dummy =
-            new WeightedBinaryTree<W, D>(get_weight(), std::make_pair(const_cast<WeightedBinaryTree<W, D>>(&get_right()), static_cast<WeightedBinaryTree<W, D>>(nullptr))
-        );
+            // Créer un std::shared_ptr nul explicite
+            std::shared_ptr<WeightedBinaryTree<W, D>> null_ptr = nullptr;
 
-        std::get<std::pair<WeightedBinaryTree<W, D>, WeightedBinaryTree<W, D>>>(m_content).second = dummy;
-    }
-
-    bool operator < (WeightedBinaryTree<W, D>* t) {
-        return t->m_weight < this->m_weight;
-    }
-
-    bool operator >(WeightedBinaryTree<W, D>* t) {
-        return t->m_weight > this->m_weight;
-    }
-
-    ~WeightedBinaryTree() {
-        if (isComplex()) {
-            auto& subtrees = std::get<std::pair<WeightedBinaryTree<W, D>*, WeightedBinaryTree<W, D>*>>(m_content);
-            delete subtrees.first;
-            delete subtrees.second;
+            // Spécifier le type lors de l'appel à make_shared
+            auto new_subtree = std::make_shared<WeightedBinaryTree<W, D>>(
+                A->get_weight(),
+                std::make_pair(A, null_ptr)
+            );
+            subtrees.second = new_subtree;
         }
     }
 
 
-    void insert_in_isorted(std::vector<D> v, D data) {
-        //v.begin() retourne  un itérateur
-        auto it =v.begin();
-        while (it != v.end() && it >data) {
-            ++it;
-        }
-        v.insert(it, data);
+
+    // 9o) Opérateurs de comparaison
+    bool operator<(const WeightedBinaryTree<W, D>& other) const {
+        return m_weight < other.m_weight;
     }
 
-  private:
+    bool operator>(const WeightedBinaryTree<W, D>& other) const {
+        return m_weight > other.m_weight;
+    }
 
-     W const m_weight; // Poids du nœud
-     std::variant<D, std::pair<WeightedBinaryTree<W, D>*, WeightedBinaryTree<W, D>*>> m_content; // Contenu du nœud
-     //constric pour créer un arbre a patir de 2 feuilles.
-     WeightedBinaryTree(W weight, D data) : m_weight(weight), m_content(data) {}
-     //constric pour créer un arbre a patir de 2 sous_arbres.
-     WeightedBinaryTree(W weight, std::pair<WeightedBinaryTree<W, D>*, WeightedBinaryTree<W, D>*> subtrees)
-    : m_weight(weight), m_content(subtrees) {}
+    // 10o) Destructeur
+    ~WeightedBinaryTree() = default;
+
+
+private:
+
+
+
+    // 2o) Champs privés
+    W const m_weight;
+    std::variant<D, std::pair<std::shared_ptr<WeightedBinaryTree<W, D>>, std::shared_ptr<WeightedBinaryTree<W, D>>> > m_content;
 
 };
-// find_match ( q1)
+
+// 11o) Fonction insert_in_isorted
 template<typename D>
-std::optional<std::pair<std::size_t, std::size_t> >
-find_match(const std::vector<D>& source, const std::vector<D>& match) {
+void insert_in_isorted(std::vector<D>& v, D data) {
+    auto it = std::lower_bound(v.rbegin(), v.rend(), data, std::greater<D>());
+    v.insert(it.base(), data);
+}
+
+
+    // find_match ( q1)
+    template<typename D>
+    std::optional<std::pair<std::size_t, std::size_t> >
+    find_match(const std::vector<D>& source, const std::vector<D>& match) {
     std::optional<std::pair<std::size_t, std::size_t>> best_match;
     std::size_t best_length = 0;
 
@@ -128,9 +162,9 @@ find_match(const std::vector<D>& source, const std::vector<D>& match) {
     return best_match;
 }
 
-// vector_shift ( q2 )
-template<typename D>
-void vector_shift(const std::vector<D>& source, std::vector<D>& windows, std::size_t const length) {
+    // vector_shift ( q2 )
+    template<typename D>
+    void vector_shift(const std::vector<D>& source, std::vector<D>& windows, std::size_t const length) {
     // retire les 'length' premières données de 'windows'
     if (length >= windows.size()) {
         windows.clear();
@@ -140,6 +174,8 @@ void vector_shift(const std::vector<D>& source, std::vector<D>& windows, std::si
 
     // ajoute à la fin de 'windows' les 'length' premières données de 'source'
     windows.insert(windows.end(), source.begin(), source.begin() + length);
+}
+
 }
 
 

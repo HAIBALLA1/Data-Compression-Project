@@ -7,7 +7,7 @@ include_directories(.)
 include_directories(src)
 
 add_executable(DM_Compression_formats_d-images
-        src/encoding_lossly.cpp
+        src/test.cpp
         src/encoding_lossly.h
         src/encoding_lossless.h
         src/utils.h
