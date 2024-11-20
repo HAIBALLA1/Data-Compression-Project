@@ -3,9 +3,11 @@
 //
 #include "encoding_lossly.h"
 #include <iostream>
-
+#include "encoding_lossless.h"
 
 #include <iomanip>// pour  setprecision
+
+#include "utils.h"
 
 int main() {
     using namespace encoding::lossly;
@@ -100,6 +102,9 @@ int main() {
                   << ", Décodé = " << decoded[i]
                   << ", Différence = " << difference << "\n";
     }
+
+    WeightedBinaryTree<int , int > tree= WeightedBinaryTree<int , int>::leaf(3,5) ;
+    encoding::lossless::Huffman<double> huffman;
 
     return 0;
 }

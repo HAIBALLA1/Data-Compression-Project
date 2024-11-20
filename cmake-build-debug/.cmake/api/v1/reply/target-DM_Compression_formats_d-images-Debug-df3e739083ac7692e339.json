@@ -48,7 +48,7 @@
 			"compileCommandFragments" : 
 			[
 				{
-					"fragment" : "-g -std=gnu++11 -fdiagnostics-color=always"
+					"fragment" : "-g -fdiagnostics-color=always"
 				}
 			],
 			"includes" : 
@@ -69,7 +69,7 @@
 				[
 					1
 				],
-				"standard" : "11"
+				"standard" : "17"
 			},
 			"sourceIndexes" : 
 			[
@@ -139,7 +139,7 @@
 		},
 		{
 			"backtrace" : 1,
-			"path" : "src/.idea/utils.h",
+			"path" : "src/utils.h",
 			"sourceGroupIndex" : 1
 		}
 	],
