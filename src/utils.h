@@ -9,6 +9,7 @@
 #include <utility>
 #include <vector>
 #include <functional>
+#include <optional>
 
 template<typename W ,typename D >
 class WeightedBinaryTree {
@@ -104,6 +105,42 @@ class WeightedBinaryTree {
     : m_weight(weight), m_content(subtrees) {}
 
 };
+// find_match ( q1)
+template<typename D>
+std::optional<std::pair<std::size_t, std::size_t> >
+find_match(const std::vector<D>& source, const std::vector<D>& match) {
+    std::optional<std::pair<std::size_t, std::size_t>> best_match;
+    std::size_t best_length = 0;
+
+    for (std::size_t i = 0; i < source.size(); ++i) {
+        if (source[i] == match[0]) {
+            std::size_t j = 0;
+            while ((i + j) < source.size() && j < match.size() && source[i + j] == match[j]) {
+                ++j;
+            }
+            if (j > best_length) {
+                best_length = j;
+                best_match = std::make_pair(i, j);
+            }
+        }
+    }
+
+    return best_match;
+}
+
+// vector_shift ( q2 )
+template<typename D>
+void vector_shift(const std::vector<D>& source, std::vector<D>& windows, std::size_t const length) {
+    // retire les 'length' premières données de 'windows'
+    if (length >= windows.size()) {
+        windows.clear();
+    } else {
+        windows.erase(windows.begin(), windows.begin() + length);
+    }
+
+    // ajoute à la fin de 'windows' les 'length' premières données de 'source'
+    windows.insert(windows.end(), source.begin(), source.begin() + length);
+}
 
 
 

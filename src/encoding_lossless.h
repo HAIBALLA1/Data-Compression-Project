@@ -162,5 +162,107 @@ namespace encoding::lossless {
     }
 
     };
+
+        // LZ77
+
+    template<typename D>
+    struct LZ77 {
+
+        static std::vector<std::variant<D, std::pair<std::size_t, std::size_t> > >
+        encode(const std::vector<D>& source, const D& unit, std::size_t const buffer_size, std::size_t const chunk_size) {
+                // 5.1
+            assert(chunk_size < buffer_size);
+
+                // 5.2
+            std::vector<D> windows(buffer_size - chunk_size, unit);
+            windows.insert(windows.end(), source.begin(), source.begin() + chunk_size);
+
+            std::size_t current = chunk_size;
+
+                // 5.3
+            std::vector<std::variant<D, std::pair<std::size_t, std::size_t> > > encoded;
+            for (std::size_t i = 0; i < chunk_size; ++i) {
+                encoded.push_back(source[i]);
+            }
+
+                // 5.4
+            while (current < source.size()) {
+                    // 5.4.a
+                std::size_t end = std::min(source.size(), current + chunk_size);
+                std::vector<D> match(source.begin() + current, source.begin() + end);
+
+                auto match_result = find_match(windows, match);
+                std::size_t length = 1;
+
+                if (!match_result.has_value()) {
+                        // 5.4.b
+                    encoded.push_back(source[current]);
+                }
+
+                else {
+                        // 5.4.c
+                    encoded.push_back(match_result.value());
+                    length = match_result.value().second;
+                }
+
+                    // 5.4.d
+                std::vector<D> shift_source(source.begin() + current, source.begin() + current + length);
+                vector_shift(shift_source, windows, length);
+
+                    // 5.4.e
+                current += length;
+            }
+
+            return encoded;
+        }
+
+            // 6
+        static std::vector<D> decode(
+        const std::vector<std::variant<D, std::pair<std::size_t, std::size_t> > >& encoded,
+        const D& unit, std::size_t const buffer_size, std::size_t const chunk_size
+        ) {
+                // initialisation de windows avec des copies de 'unit'
+            std::vector<D> windows(buffer_size - chunk_size, unit);
+            std::vector<D> result;
+
+                // chunk_size premières données
+            for (std::size_t i = 0; i < chunk_size; ++i) {
+                D value = std::get<D>(encoded[i]);
+                result.push_back(value);
+                windows.push_back(value);
+            }
+
+                // reste des données encodées
+            for (std::size_t idx = chunk_size; idx < encoded.size(); ++idx) {
+                const auto& item = encoded[idx];
+                if (std::holds_alternative<D>(item)) {
+                    D value = std::get<D>(item);
+                    result.push_back(value);
+                    windows.push_back(value);
+
+                    if (windows.size() > buffer_size) {
+                        windows.erase(windows.begin(), windows.begin() + (windows.size() - buffer_size));
+                    }
+                }
+                else {
+                        // cas ou paire
+                    auto [offset, length] = std::get<std::pair<std::size_t, std::size_t> >(item);
+
+                    for (std::size_t i = 0; i < length; ++i) {
+                        D value = windows[offset + i];
+                        result.push_back(value);
+                        windows.push_back(value);
+
+                        if (windows.size() > buffer_size) {
+                            windows.erase(windows.begin(), windows.begin() + (windows.size() - buffer_size));
+                        }
+                    }
+                }
+            }
+
+            return result;
+        }
+
+    };
 }
 #endif // ENCODING_LOSSLESS_HPP
