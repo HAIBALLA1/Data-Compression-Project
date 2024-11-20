@@ -23,8 +23,8 @@ int main() {
     // Test Quantization
     std::cout << "=== Test Quantization ===" << std::endl;
     double quantum = 0.5;
-    auto quantized = quantization::encode(source_cos, quantum);
-    auto dequantized = quantization::decode<double>(quantized, quantum);
+    auto quantized = Quantization::encode(source_cos, quantum);
+    auto dequantized = Quantization::decode<double>(quantized, quantum);
     std::cout << "Quantized: ";
     for (const auto& val : quantized) std::cout << val << " ";
     std::cout << "\nDequantized: ";

@@ -1,6 +1,4 @@
-//
-// Created by naben on 18/11/24.
-//
+
 #ifndef ENCODING_LOSSLESS_H
 #define ENCODING_LOSSLESS_H
 
@@ -169,96 +167,70 @@ namespace encoding::lossless {
 
     template<typename D>
     struct LZ77 {
-
-        static std::vector<std::variant<D, std::pair<std::size_t, std::size_t> > >
-        encode(const std::vector<D>& source, const D& unit, std::size_t const buffer_size, std::size_t const chunk_size) {
-                // 5.1
+        // Fonction d'encodage LZ77
+        static std::vector<std::variant<D, std::pair<std::size_t, std::size_t>>>
+        encode(const std::vector<D>& source, const D& unit, std::size_t buffer_size, std::size_t chunk_size) {
             assert(chunk_size < buffer_size);
 
-                // 5.2
-            std::vector<D> windows(buffer_size - chunk_size, unit);
-            windows.insert(windows.end(), source.begin(), source.begin() + chunk_size);
+            std::vector<std::variant<D, std::pair<std::size_t, std::size_t>>> encoded;
+            std::size_t current = 0;
+            std::size_t source_size = source.size();
 
-            std::size_t current = chunk_size;
+            while (current < source_size) {
+                // Déterminer les limites du buffer de recherche
+                std::size_t search_buffer_start = (current >= buffer_size) ? (current - buffer_size) : 0;
+                std::vector<D> search_buffer(source.begin() + search_buffer_start, source.begin() + current);
+                // Obtenir le buffer de prélecture
+                std::vector<D> lookahead_buffer(source.begin() + current, source.begin() + std::min(current + chunk_size, source_size));
 
-                // 5.3
-            std::vector<std::variant<D, std::pair<std::size_t, std::size_t> > > encoded;
-            for (std::size_t i = 0; i < chunk_size; ++i) {
-                encoded.push_back(source[i]);
-            }
+                // Trouver la meilleure correspondance
+                auto match_result = find_match(search_buffer, lookahead_buffer);
 
-                // 5.4
-            while (current < source.size()) {
-                    // 5.4.a
-                std::size_t end = std::min(source.size(), current + chunk_size);
-                std::vector<D> match(source.begin() + current, source.begin() + end);
-
-                auto match_result = find_match(windows, match);
-                std::size_t length = 1;
-
-                if (!match_result.has_value()) {
-                        // 5.4.b
-                    encoded.push_back(source[current]);
-                }
-
-                else {
-                        // 5.4.c
+                if (match_result.has_value() && match_result->second > 0) {
+                    // Correspondance trouvée
                     encoded.push_back(match_result.value());
-                    length = match_result.value().second;
+                    current += match_result->second;
+                } else {
+                    // Aucune correspondance, encoder le symbole directement
+                    encoded.push_back(source[current]);
+                    ++current;
                 }
-
-                    // 5.4.d
-                std::vector<D> shift_source(source.begin() + current, source.begin() + current + length);
-                vector_shift(shift_source, windows, length);
-
-                    // 5.4.e
-                current += length;
             }
 
             return encoded;
         }
 
-            // 6
+
+        // Fonction de décodage LZ77
         static std::vector<D> decode(
-        const std::vector<std::variant<D, std::pair<std::size_t, std::size_t> > >& encoded,
-        const D& unit, std::size_t const buffer_size, std::size_t const chunk_size
+            const std::vector<std::variant<D, std::pair<std::size_t, std::size_t>>>& encoded,
+            const D& unit, std::size_t buffer_size, std::size_t chunk_size
         ) {
-                // initialisation de windows avec des copies de 'unit'
-            std::vector<D> windows(buffer_size - chunk_size, unit);
             std::vector<D> result;
+            std::vector<D> window;
 
-                // chunk_size premières données
-            for (std::size_t i = 0; i < chunk_size; ++i) {
-                D value = std::get<D>(encoded[i]);
-                result.push_back(value);
-                windows.push_back(value);
-            }
-
-                // reste des données encodées
-            for (std::size_t idx = chunk_size; idx < encoded.size(); ++idx) {
-                const auto& item = encoded[idx];
+            for (const auto& item : encoded) {
                 if (std::holds_alternative<D>(item)) {
+                    // Symbole encodé directement
                     D value = std::get<D>(item);
                     result.push_back(value);
-                    windows.push_back(value);
-
-                    if (windows.size() > buffer_size) {
-                        windows.erase(windows.begin(), windows.begin() + (windows.size() - buffer_size));
-                    }
-                }
-                else {
-                        // cas ou paire
-                    auto [offset, length] = std::get<std::pair<std::size_t, std::size_t> >(item);
+                    window.push_back(value);
+                } else {
+                    // Paire (offset, length)
+                    auto [offset, length] = std::get<std::pair<std::size_t, std::size_t>>(item);
+                    std::size_t window_size = window.size();
+                    std::size_t start_index = window_size - offset;
 
                     for (std::size_t i = 0; i < length; ++i) {
-                        D value = windows[offset + i];
+                        D value = window[start_index + i];
                         result.push_back(value);
-                        windows.push_back(value);
-
-                        if (windows.size() > buffer_size) {
-                            windows.erase(windows.begin(), windows.begin() + (windows.size() - buffer_size));
-                        }
+                        window.push_back(value);
                     }
+                }
+
+                // Maintenir la taille de la fenêtre
+                if (window.size() > buffer_size) {
+                    window.erase(window.begin(), window.begin() + (window.size() - buffer_size));
                 }
             }
 

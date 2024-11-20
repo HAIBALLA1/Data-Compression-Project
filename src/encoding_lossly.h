@@ -1,6 +1,4 @@
-    //
-// Created by Farouk on 08/11/24.
-//
+
 #ifndef ENCODING_LOSSLY_H
 #define ENCODING_LOSSLY_H
 
@@ -14,46 +12,44 @@
 
 namespace encoding::lossly {
     struct DiscreteCosinus {
-        template<typename D, typename R>
-        static std::vector<R> encode(std::vector<D> const & source, std::size_t const & nb_coefs) {
-            std::vector<R> res;
-
-            if (source.empty()) {
-                return res;
-
+        template <typename D, typename R>
+        static std::vector<R> encode(const std::vector<D>& source, std::size_t nb_coefs) {
+            if (source.empty() || nb_coefs == 0) {
+                return std::vector<R>();
             }
-            for(std::size_t i = 0; i < nb_coefs; ++i) {
-                res.push_back(source[0]);
-                for (std::size_t j = 1; j < source.size(); ++j) {
-                    res[i] =res[i] + source[j] * std::cos((2 * M_PI * i * j) / nb_coefs);
+
+            std::vector<R> res(nb_coefs, 0);
+            for (std::size_t i = 0; i < nb_coefs; ++i) {
+                for (std::size_t j = 0; j < source.size(); ++j) {
+                    res[i] += static_cast<R>(source[j]) * cos(M_PI * (j + 0.5) * i / source.size());
                 }
+                // Correction pour le facteur de normalisation
+                res[i] *= std::sqrt(2.0 / source.size());
             }
             return res;
         }
-        template<typename D, typename R>
-        static  std::vector<D> decode(std::vector<R> const & encoded, std::size_t const size) {
-            std::vector<D> res;
-            if (encoded.empty()) {
-                return res;
 
+        template <typename D, typename R>
+        static std::vector<D> decode(const std::vector<R>& encoded, std::size_t size) {
+            if (encoded.empty() || size == 0) {
+                return std::vector<D>(size, 0);
             }
-            std::size_t nb_coefs =encoded.size();
+
+            std::vector<D> res(size, 0);
             for (std::size_t i = 0; i < size; ++i) {
-                res.push_back(encoded[0]);
-                for (std::size_t j = 1; j < encoded.size(); ++j) {
-                    double theta = (2 * M_PI * j * i) / nb_coefs;
-                    res[i] = res[i] + encoded[j] * cos(theta);
+                for (std::size_t j = 0; j < encoded.size(); ++j) {
+                    res[i] += static_cast<D>(encoded[j]) * cos(M_PI * (i + 0.5) * j / size);
                 }
-                res[i] = res[i] / nb_coefs;
+                // Correction pour le facteur de normalisation
+                res[i] *= std::sqrt(2.0 / size);
             }
             return res;
-
         }
 
     };
 
 
-   struct quantization {
+   struct Quantization {
        using  get_quantum_t = std::function<double(std::size_t k)>;
        template<typename D>
        static std::vector<int> encode(std::vector<D> const & source, double const quantum) {
@@ -115,7 +111,7 @@ namespace encoding::lossly {
                     R real_sum = static_cast<R>(source[0]);
                     R img_sum = static_cast<R>(0);
                     for (std::size_t j = 1; j < source.size(); ++j) {
-                        double angle = 2 * M_PI * i * j / nb_coefs;
+                        double angle = (2 * M_PI * i * j) / nb_coefs;
                         real_sum += static_cast<R>(source[j]) * std::cos(angle);
                         img_sum += static_cast<R>(source[j]) * std::sin(angle);
                     }
