@@ -51,7 +51,7 @@ build cmake_object_order_depends_target_DM_Compression_formats_d-images: phony |
 
 build CMakeFiles/DM_Compression_formats_d-images.dir/src/test.cpp.o: CXX_COMPILER__DM_Compression_formats_d-images_unscanned_Debug /home/ing/Bureau/DM_Compression_formats_d-images/src/test.cpp || cmake_object_order_depends_target_DM_Compression_formats_d-images
   DEP_FILE = CMakeFiles/DM_Compression_formats_d-images.dir/src/test.cpp.o.d
-  FLAGS = -g -fdiagnostics-color=always
+  FLAGS = -g -std=gnu++17 -fdiagnostics-color=always
   INCLUDES = -I/home/ing/Bureau/DM_Compression_formats_d-images/. -I/home/ing/Bureau/DM_Compression_formats_d-images/src
   OBJECT_DIR = CMakeFiles/DM_Compression_formats_d-images.dir
   OBJECT_FILE_DIR = CMakeFiles/DM_Compression_formats_d-images.dir/src

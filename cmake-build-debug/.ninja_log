@@ -1,20 +1,5 @@
 # ninja log v6
-579	627	1732123725658410657	DM_Compression_formats_d-images	979a869895525e96
-1	579	1732123725082398477	CMakeFiles/DM_Compression_formats_d-images.dir/src/encoding_lossly.cpp.o	65131a89546fae7b
-0	11	1732127146165716849	build.ninja	cd9356e2698aa69a
-0	1077	1732131978898057238	CMakeFiles/DM_Compression_formats_d-images.dir/src/test.cpp.o	6645cb0f44714b4b
-1078	1152	1732131979974055695	DM_Compression_formats_d-images	d33d970c91896350
-1	1175	1732136062171278861	CMakeFiles/DM_Compression_formats_d-images.dir/src/test.cpp.o	6645cb0f44714b4b
-1175	1237	1732136063343275532	DM_Compression_formats_d-images	d33d970c91896350
-1	2534	1732138026429241658	CMakeFiles/DM_Compression_formats_d-images.dir/src/test.cpp.o	6645cb0f44714b4b
-2534	2695	1732138028961234353	DM_Compression_formats_d-images	d33d970c91896350
-1	2809	1732138562463800105	CMakeFiles/DM_Compression_formats_d-images.dir/src/test.cpp.o	6645cb0f44714b4b
-2810	2973	1732138565275792494	DM_Compression_formats_d-images	d33d970c91896350
-1	2350	1732138699271427767	CMakeFiles/DM_Compression_formats_d-images.dir/src/test.cpp.o	6645cb0f44714b4b
-2350	2456	1732138701619421344	DM_Compression_formats_d-images	d33d970c91896350
-1	2546	1732138778767209739	CMakeFiles/DM_Compression_formats_d-images.dir/src/test.cpp.o	6645cb0f44714b4b
-2546	2669	1732138781311202744	DM_Compression_formats_d-images	d33d970c91896350
-1	2570	1732139913008035909	CMakeFiles/DM_Compression_formats_d-images.dir/src/test.cpp.o	6645cb0f44714b4b
-2570	2720	1732139915576028661	DM_Compression_formats_d-images	d33d970c91896350
-2	2867	1732140550990355877	CMakeFiles/DM_Compression_formats_d-images.dir/src/test.cpp.o	6645cb0f44714b4b
 2867	2966	1732140553854348486	DM_Compression_formats_d-images	d33d970c91896350
+1	579	1732123725082398477	CMakeFiles/DM_Compression_formats_d-images.dir/src/encoding_lossly.cpp.o	65131a89546fae7b
+0	11	1732141158224738772	build.ninja	cd9356e2698aa69a
+2	2867	1732140550990355877	CMakeFiles/DM_Compression_formats_d-images.dir/src/test.cpp.o	6645cb0f44714b4b
