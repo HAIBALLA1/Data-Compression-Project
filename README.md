@@ -16,12 +16,15 @@ It demonstrates practical compression techniques used in systems such as audio/v
 ---
 
 ## Folder Structure
+
+```
 src/
-├── encoding_lossless.hpp # Huffman, LZ77, RLE
-├── encoding_lossy.hpp # DCT, DFT, Quantization
-├── utils.hpp # WeightedBinaryTree + helper algorithms
-└── test.cpp # Demonstration / verification program
-CMakeLists.txt # C++20 project configuration
+├─ encoding_lossless.hpp      # Huffman, LZ77, Run-Length encoding
+├─ encoding_lossy.hpp         # DCT, DFT, Quantization
+├─ utils.hpp                  # WeightedBinaryTree + helper algorithms
+└─ test.cpp                   # Demonstration / verification program
+CMakeLists.txt                # C++20 project configuration
+```
 
 
 ---
