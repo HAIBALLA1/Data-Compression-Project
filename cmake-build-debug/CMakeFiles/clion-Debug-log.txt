@@ -1,4 +1,0 @@
-/home/ing/Téléchargements/CLion-2024.2.1/clion-2024.2.1/bin/cmake/linux/x64/bin/cmake -DCMAKE_BUILD_TYPE=Debug -DCMAKE_MAKE_PROGRAM=/home/ing/Téléchargements/CLion-2024.2.1/clion-2024.2.1/bin/ninja/linux/x64/ninja -G Ninja -S /home/ing/Bureau/DM_Compression_formats_d-images -B /home/ing/Bureau/DM_Compression_formats_d-images/cmake-build-debug
--- Configuring done (0.0s)
--- Generating done (0.0s)
--- Build files have been written to: /home/ing/Bureau/DM_Compression_formats_d-images/cmake-build-debug

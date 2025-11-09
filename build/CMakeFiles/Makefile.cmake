@@ -7,7 +7,7 @@ set(CMAKE_DEPENDS_GENERATOR "Unix Makefiles")
 # The top level Makefile was generated from the following files:
 set(CMAKE_MAKEFILE_DEPENDS
   "CMakeCache.txt"
-  "/home/ing/Bureau/DM_Compression_formats_d-images/CMakeLists.txt"
+  "/home/ing/Bureau/Data-Compression-Project/CMakeLists.txt"
   "CMakeFiles/3.25.1/CMakeCXXCompiler.cmake"
   "CMakeFiles/3.25.1/CMakeSystem.cmake"
   "/usr/share/cmake-3.25/Modules/CMakeCXXCompiler.cmake.in"
@@ -99,5 +99,5 @@ set(CMAKE_MAKEFILE_PRODUCTS
 
 # Dependency information for all targets:
 set(CMAKE_DEPEND_INFO_FILES
-  "CMakeFiles/DM_Compression_formats_d-images.dir/DependInfo.cmake"
+  "CMakeFiles/dc_test.dir/DependInfo.cmake"
   )

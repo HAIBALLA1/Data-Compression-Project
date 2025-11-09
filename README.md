@@ -1,77 +1,64 @@
-# Data Compression Project
+# Data Compression Project — Modern C++20
 
-This project focuses on implementing both lossless and lossy data compression algorithms in C++. It includes well-known algorithms such as Huffman, LZ77, Discrete Fourier Transform, Discrete Cosine Transform, and Quantization. The project aims to provide a versatile compression suite to demonstrate encoding and decoding techniques that help in data reduction.
+This project implements a suite of **lossless** and **lossy** data compression algorithms in **modern C++20**, emphasizing clarity, generic programming, and computational reasoning. 
+It demonstrates practical compression techniques used in systems such as audio/video codecs, storage systems, and communication pipelines.
 
-## Project Overview
+---
 
-The project includes two main namespaces:
+## Features Overview
 
-- **encoding::lossless**: Contains implementations for lossless data compression techniques like Huffman, LZ77, and custom run-length encoding (CompressRepeating).
-- **encoding::lossly**: Contains implementations for lossy data compression techniques, including Discrete Cosine Transform, Quantization, and Discrete Fourier Transform.
+| Category | Algorithms | Description |
+|---------|------------|-------------|
+| **Lossless Compression** | **Huffman**, **LZ77**, **CompressRepeating (Run-Length Encoding)** | Reversible compression preserving the original data exactly. |
+| **Lossy Compression** | **DCT (Discrete Cosine Transform)**, **DFT (Discrete Fourier Transform)**, **Quantization** | Irreversible compression where less important information is reduced or approximated. |
+| **Utilities** | `WeightedBinaryTree`, `find_match`, `vector_shift` | Shared structures and helpers for Huffman and LZ77 implementations. |
 
-### Project Files
+---
 
-1. **encoding_lossless.h**: Contains definitions for various lossless compression algorithms:
-    - **CompressRepeating**: Custom run-length encoding for repeating symbols.
-    - **Huffman**: A classic Huffman coding implementation for efficient data compression.
-    - **LZ77**: Implements the LZ77 algorithm for dictionary-based compression.
+## Folder Structure
+src/
+├── encoding_lossless.hpp # Huffman, LZ77, RLE
+├── encoding_lossy.hpp # DCT, DFT, Quantization
+├── utils.hpp # WeightedBinaryTree + helper algorithms
+└── test.cpp # Demonstration / verification program
+CMakeLists.txt # C++20 project configuration
 
-2. **encoding_lossly.h**: Contains definitions for lossy compression algorithms:
-    - **DiscreteCosinus**: Implements the Discrete Cosine Transform (DCT) for compressing data with minimal loss.
-    - **Quantization**: Performs scalar quantization of the data for reducing precision with configurable quantum levels.
-    - **DiscreteFourier**: Implements the Discrete Fourier Transform (DFT) to encode and decode signals in the frequency domain.
 
-3. **utils.h**: Contains utility functions and a generic implementation of **WeightedBinaryTree** used in the Huffman encoding process.
-    - Also includes helper functions like **find_match** (for LZ77) and **insert_in_isorted** (for maintaining sorted lists).
+---
 
-4. **main.cpp**: Contains test cases for each of the implemented algorithms to validate the encoding and decoding processes.
+## Requirements
 
-### Compression Algorithms
+- **GCC ≥ 12** or **Clang ≥ 14**
+- **CMake ≥ 3.16**
+- Linux, macOS or WSL environment recommended
 
-- **CompressRepeating** (Run-Length Encoding):
-    - Used for compressing repeating elements in a sequence.
-    - Efficient for data that contains long runs of identical values.
+---
 
-- **Huffman Encoding**:
-    - Uses a frequency-based binary tree to encode symbols with variable-length codes.
-    - Ensures that more frequent symbols use shorter codes to achieve compression.
-
-- **LZ77**:
-    - Employs a sliding window technique to find and encode repeating patterns.
-    - Suitable for compressing large sequences by using references to previously seen data.
-
-- **Discrete Cosine Transform (DCT)**:
-    - Transforms spatial data to frequency domain for efficient representation.
-    - Typically used in lossy image compression to retain significant information while discarding less noticeable details.
-
-- **Quantization**:
-    - Reduces data precision by dividing it into quantum levels.
-    - Especially effective in conjunction with DCT to reduce the size of encoded data.
-
-- **Discrete Fourier Transform (DFT)**:
-    - Converts data from the time domain to the frequency domain.
-    - The resulting frequency components are used for compression, typically by discarding less significant frequencies.
-
-### Usage
-
-To compile the project, use the following command:
+## Build & Run
 
 ```bash
-# Assuming you have a C++ compiler supporting C++17
-g++ -std=c++17 main.cpp -o compression -lm
-```
+cmake -S . -B build -DCMAKE_BUILD_TYPE=Debug
+cmake --build build -j
+./build/dc_test
 
-To run the tests provided in `main.cpp`:
 
-```bash
-./compression
-```
+Algorithm Highlights
+Huffman Coding
 
-### How to Contribute
+Builds a weighted binary tree to assign shorter codes to frequent symbols, achieving effective compression.
 
-If you want to contribute to this project, you can do the following:
+LZ77 Sliding Window
 
-- Fork the repository on GitHub.
-- Make your changes or add new features.
-- Create a pull request, and explain the changes you made.
+Uses a backward reference buffer to encode repeated patterns as (offset, length) pairs instead of literal data.
 
+Discrete Cosine Transform (DCT)
+
+Transforms spatial data into frequency space. Low-frequency components carry most significance — ideal for image compression.
+
+Quantization
+
+Reduces numeric precision into discrete quantum steps. Used in JPEG, MP3, video compression.
+
+Discrete Fourier Transform (DFT)
+
+Represents data as sinusoidal components. Useful for analyzing periodic or oscillatory signals.

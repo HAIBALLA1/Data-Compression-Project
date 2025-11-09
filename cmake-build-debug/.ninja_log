@@ -1,5 +1,0 @@
-# ninja log v6
-2867	2966	1732140553854348486	DM_Compression_formats_d-images	d33d970c91896350
-1	579	1732123725082398477	CMakeFiles/DM_Compression_formats_d-images.dir/src/encoding_lossly.cpp.o	65131a89546fae7b
-0	11	1732141158224738772	build.ninja	cd9356e2698aa69a
-2	2867	1732140550990355877	CMakeFiles/DM_Compression_formats_d-images.dir/src/test.cpp.o	6645cb0f44714b4b
